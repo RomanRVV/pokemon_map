@@ -24,11 +24,25 @@
 pip install -r requirements.txt
 ```
 
+Создайте базу данных:
+
+```sh
+python3 manage.py makemigrations
+python3 manage.py migrate
+```
+Создайте суперпользователя
+```sh
+python3 manage.py createsuperuser
+```
+
 Запустите разработческий сервер
 
 ```sh
 python3 manage.py runserver
 ```
+
+Для входа в админ-панель откройте ссылку /admin (например http://127.0.0.1:8000/admin) и введите логин и пароль суперпользователя
+
 
 ### Переменные окружения
 
