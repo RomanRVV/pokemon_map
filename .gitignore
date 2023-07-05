@@ -90,4 +90,4 @@ db.sqlite3
 media/
 .idea
 pokemon_entities/show_pokemon_helpers.py
-
+pokemon_entities/pokemons.json
