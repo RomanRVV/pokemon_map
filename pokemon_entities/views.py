@@ -74,17 +74,20 @@ def show_pokemon(request, pokemon_id):
         "description": requested_pokemon.description,
         "img_url": img_url
     }
-    if requested_pokemon.previous_evolution:
-        if requested_pokemon.previous_evolution.image:
-            previous_evolution_img_url = request.build_absolute_uri(requested_pokemon.previous_evolution.image.url)
+
+    previous_evolution = requested_pokemon.previous_evolution
+    if previous_evolution:
+        if previous_evolution.image:
+            previous_evolution_img_url = request.build_absolute_uri(previous_evolution.image.url)
         else:
             previous_evolution_img_url = None
-        pokemon["previous_evolution"] = {"title_ru": requested_pokemon.previous_evolution.title,
-                                         "pokemon_id": requested_pokemon.previous_evolution.id,
+        pokemon["previous_evolution"] = {"title_ru": previous_evolution.title,
+                                         "pokemon_id": previous_evolution.id,
                                          "img_url": previous_evolution_img_url
                                          }
-    try:
-        next_evolution = requested_pokemon.evolution.get()
+
+    next_evolutions = requested_pokemon.evolution.all()
+    for next_evolution in next_evolutions:
         if next_evolution.image:
             next_evolution_img_url = request.build_absolute_uri(next_evolution.image.url)
         else:
@@ -93,8 +96,6 @@ def show_pokemon(request, pokemon_id):
                                      "pokemon_id": next_evolution.id,
                                      "img_url": next_evolution_img_url
                                      }
-    except Pokemon.DoesNotExist:
-        print("Нет следующей эволюции")
 
     folium_map = folium.Map(location=MOSCOW_CENTER, zoom_start=12)
     active_pokemons = requested_pokemon.pokemon_entities.filter(appeared_at__lte=localtime(),
