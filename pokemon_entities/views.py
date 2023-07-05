@@ -1,5 +1,4 @@
 import folium
-import json
 from django.utils.timezone import localtime
 from django.http import HttpResponseNotFound
 from django.shortcuts import render
@@ -67,10 +66,6 @@ def show_pokemon(request, pokemon_id):
         img_url = request.build_absolute_uri(requested_pokemon.image.url)
     else:
         img_url = None
-    if requested_pokemon.previous_evolution.image:
-        previous_evolution_img_url = request.build_absolute_uri(requested_pokemon.previous_evolution.image.url)
-    else:
-        previous_evolution_img_url = None
     pokemon = {
         "pokemon_id": requested_pokemon.id,
         "title_ru": requested_pokemon.title,
@@ -80,10 +75,27 @@ def show_pokemon(request, pokemon_id):
         "img_url": img_url
     }
     if requested_pokemon.previous_evolution:
+        if requested_pokemon.previous_evolution.image:
+            previous_evolution_img_url = request.build_absolute_uri(requested_pokemon.previous_evolution.image.url)
+        else:
+            previous_evolution_img_url = None
         pokemon["previous_evolution"] = {"title_ru": requested_pokemon.previous_evolution.title,
                                          "pokemon_id": requested_pokemon.previous_evolution.id,
                                          "img_url": previous_evolution_img_url
                                          }
+    try:
+        next_evolution = requested_pokemon.evolution.get()
+        if next_evolution.image:
+            next_evolution_img_url = request.build_absolute_uri(next_evolution.image.url)
+        else:
+            next_evolution_img_url = None
+        pokemon["next_evolution"] = {"title_ru": next_evolution.title,
+                                     "pokemon_id": next_evolution.id,
+                                     "img_url": next_evolution_img_url
+                                     }
+    except Pokemon.DoesNotExist:
+        print("Нет следующей эволюции")
+
     folium_map = folium.Map(location=MOSCOW_CENTER, zoom_start=12)
     active_pokemons = requested_pokemon.pokemon_entities.filter(appeared_at__lte=localtime(),
                                                                 disappeared_at__gte=localtime())
