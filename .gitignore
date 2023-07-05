@@ -89,4 +89,5 @@ local_settings.py
 db.sqlite3
 media/
 .idea
+pokemon_entities/show_pokemon_helpers.py
 
