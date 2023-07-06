@@ -15,8 +15,7 @@ DEFAULT_IMAGE_URL = (
 def get_img_url(request, pokemon):
     if not pokemon.image:
         return
-    img_url = request.build_absolute_uri(pokemon.image.url)
-    return img_url
+    return request.build_absolute_uri(pokemon.image.url)
 
 
 def add_pokemon(folium_map, lat, lon, image_url=DEFAULT_IMAGE_URL):
@@ -38,7 +37,8 @@ def show_all_pokemons(request):
     active_pokemons = PokemonEntity.objects.filter(appeared_at__lte=local_time,
                                                    disappeared_at__gte=local_time)
     for pokemon_entity in active_pokemons:
-        pokemon_entity_img_url = get_img_url(request, pokemon_entity)
+        pokemon_entity_img_url = get_img_url(request, pokemon_entity.pokemon)
+        print(pokemon_entity_img_url)
         add_pokemon(
             folium_map, pokemon_entity.lat,
             pokemon_entity.lon,
@@ -81,11 +81,12 @@ def show_pokemon(request, pokemon_id):
                                          }
 
     next_evolution = requested_pokemon.next_evolutions.first()
-    next_evolution_img_url = get_img_url(request, next_evolution)
-    pokemon["next_evolution"] = {"title_ru": next_evolution.title,
-                                 "pokemon_id": next_evolution.id,
-                                 "img_url": next_evolution_img_url
-                                 }
+    if next_evolution:
+        next_evolution_img_url = get_img_url(request, next_evolution)
+        pokemon["next_evolution"] = {"title_ru": next_evolution.title,
+                                     "pokemon_id": next_evolution.id,
+                                     "img_url": next_evolution_img_url
+                                     }
 
     folium_map = folium.Map(location=MOSCOW_CENTER, zoom_start=12)
     local_time = localtime()
