@@ -1,6 +1,6 @@
 import folium
 from django.utils.timezone import localtime
-from django.http import HttpResponseNotFound
+from django.shortcuts import get_object_or_404
 from django.shortcuts import render
 from .models import Pokemon, PokemonEntity
 
@@ -17,10 +17,6 @@ def get_img_url(request, pokemon):
         return
     img_url = request.build_absolute_uri(pokemon.image.url)
     return img_url
-
-
-
-
 
 
 def add_pokemon(folium_map, lat, lon, image_url=DEFAULT_IMAGE_URL):
@@ -65,10 +61,7 @@ def show_all_pokemons(request):
 
 
 def show_pokemon(request, pokemon_id):
-    try:
-        requested_pokemon = Pokemon.objects.get(id=int(pokemon_id))
-    except Pokemon.DoesNotExist:
-        return HttpResponseNotFound('<h1>Такой покемон не найден</h1>')
+    requested_pokemon = get_object_or_404(Pokemon, id=int(pokemon_id))
     pokemon_img_url = get_img_url(request, requested_pokemon)
     pokemon = {
         "pokemon_id": requested_pokemon.id,
