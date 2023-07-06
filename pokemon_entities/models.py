@@ -16,7 +16,7 @@ class Pokemon(models.Model):
                                            verbose_name="Предыдущая эволюция покемона")
 
     def __str__(self):
-        return f"{self.title}"
+        return self.title
 
 
 class PokemonEntity(models.Model):
