@@ -80,13 +80,12 @@ def show_pokemon(request, pokemon_id):
                                          "img_url": previous_evolution_img_url
                                          }
 
-    next_evolutions = requested_pokemon.next_evolutions.all()
-    for next_evolution in next_evolutions:
-        next_evolution_img_url = get_img_url(request, next_evolution)
-        pokemon["next_evolution"] = {"title_ru": next_evolution.title,
-                                     "pokemon_id": next_evolution.id,
-                                     "img_url": next_evolution_img_url
-                                     }
+    next_evolution = requested_pokemon.next_evolutions.first()
+    next_evolution_img_url = get_img_url(request, next_evolution)
+    pokemon["next_evolution"] = {"title_ru": next_evolution.title,
+                                 "pokemon_id": next_evolution.id,
+                                 "img_url": next_evolution_img_url
+                                 }
 
     folium_map = folium.Map(location=MOSCOW_CENTER, zoom_start=12)
     local_time = localtime()
