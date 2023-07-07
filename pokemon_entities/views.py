@@ -38,7 +38,6 @@ def show_all_pokemons(request):
                                                    disappeared_at__gte=local_time)
     for pokemon_entity in active_pokemons:
         pokemon_entity_img_url = get_img_url(request, pokemon_entity.pokemon)
-        print(pokemon_entity_img_url)
         add_pokemon(
             folium_map, pokemon_entity.lat,
             pokemon_entity.lon,
