@@ -14,7 +14,7 @@ DEFAULT_IMAGE_URL = (
 
 def get_img_url(request, pokemon):
     if not pokemon.image:
-        return
+        return DEFAULT_IMAGE_URL
     return request.build_absolute_uri(pokemon.image.url)
 
 
